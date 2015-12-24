@@ -1,5 +1,5 @@
 # docker-letsencrypt
-Letsencrypt cert auto renewal for nginx base image
+Letsencrypt cert auto getting and renewal script based on letsencrypt base image.
 
 
 Add nginx location for your server:
