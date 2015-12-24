@@ -12,6 +12,21 @@ Add nginx location for your server:
 
 docker-compose.yml
 ```yaml
+nginx:
+  restart: always
+  image: nginx
+  hostname: nginx
+  volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - ./nginx:/etc/nginx:ro
+    - ./letsencrypt:/etc/letsencrypt
+    - ./nginx/letsencrypt:/tmp/letsencrypt
+  ports:
+    - 80:80
+    - 443:443
+  environment:
+    - LE_RENEW_HOOK=docker kill -s HUP @CONTAINER_NAME@
+
 letsencrypt:
   restart: always
   image: kvaps/letsencrypt
@@ -19,8 +34,10 @@ letsencrypt:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/docker.sock:/tmp/docker.sock
-    - ./letsencrypt/conf:/etc/letsencrypt
-    - ./letsencrypt/html:/tmp/letsencrypt
+    - ./letsencrypt:/etc/letsencrypt
+    - ./nginx/letsencrypt:/tmp/letsencrypt
+  links:
+    - nginx
   environment:
     - DOMAINS=example.com www.example.com
     - EMAIL=your@email.tld
