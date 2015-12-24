@@ -18,7 +18,6 @@ letsencrypt:
   hostname: letsencrypt
   volumes:
     - /etc/localtime:/etc/localtime:ro
-    - /var/run/docker.sock:/tmp/docker.sock
     - ./letsencrypt/conf:/etc/letsencrypt
     - ./letsencrypt/html:/tmp/letsencrypt
   environment:
