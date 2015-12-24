@@ -17,14 +17,14 @@ letsencrypt:
   image: kvaps/letsencrypt
   hostname: letsencrypt
   volumes:
-    - '/etc/localtime:/etc/localtime:ro'
-    - '/var/run/docker.sock:/tmp/docker.sock'
-    - './letsencrypt/conf:/etc/letsencrypt'
-    - './letsencrypt/html:/tmp/letsencrypt'
+    - /etc/localtime:/etc/localtime:ro
+    - /var/run/docker.sock:/tmp/docker.sock
+    - ./letsencrypt/conf:/etc/letsencrypt
+    - ./letsencrypt/html:/tmp/letsencrypt
   environment:
-    - 'DOMAINS=example.com www.example.com'
-    - 'EMAIL=your@email.tld'
-    - 'WEBROOT_PATH=/tmp/letsencrypt'
-    - 'EXP_LIMIT=30'
-    - 'CHECK_FREQ=30'
+    - DOMAINS=example.com www.example.com
+    - EMAIL=your@email.tld
+    - WEBROOT_PATH=/tmp/letsencrypt
+    - EXP_LIMIT=30
+    - CHECK_FREQ=30
 ```
