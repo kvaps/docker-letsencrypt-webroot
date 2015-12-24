@@ -1,6 +1,15 @@
 # docker-letsencrypt
 Letsencrypt cert auto renewal for nginx base image
 
+
+Add nginx location for your server:
+```nginx
+    location '/.well-known/acme-challenge' {
+        default_type "text/plain";
+        root        /tmp/letsencrypt;
+    }
+```
+
 docker-compose.yml
 ```yaml
 letsencrypt:
