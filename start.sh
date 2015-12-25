@@ -57,13 +57,38 @@ le_check_renew() {
         echo "Checking expiration date for $DARRAYS..."
         
         if [ "$days_exp" -gt "$exp_limit" ] ; then
-        	echo "The certificate is up to date, no need for renewal ($days_exp days left)."
+            echo "The certificate is up to date, no need for renewal ($days_exp days left)."
         else
-        	echo "The certificate for $DARRAYS is about to expire soon. Starting webroot renewal script..."
-                letsencrypt certonly --webroot --agree-tos --renew-by-default --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
-                run_renew_hook
-        	echo "Renewal process finished for domain $DARRAYS"
+            echo "The certificate for $DARRAYS is about to expire soon. Starting webroot renewal script..."
+            letsencrypt certonly --webroot --agree-tos --renew-by-default --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
+            run_renew_hook
+            echo "Renewal process finished for domain $DARRAYS"
         fi
+
+        echo "Checking domains for $DARRAYS..."
+
+        domains=($(openssl x509  -in $cert_file -text -noout | grep -oP '(?<=DNS:)[^,]*'))
+        removed_domains=($(
+            for domain in ${domains[@]}; do
+                [[ " ${DARRAYS[@]} " =~ " ${domain} " ]] || echo $domain
+            done
+        ))
+        new_domains=($(
+            for domain in ${DARRAYS[@]}; do
+                [[ " ${domains[@]} " =~ " ${domain} " ]] || echo $domain
+            done
+        ))
+
+        if [ -z "$new_domains" ] || [ -z "$removed_domains" ] ; then
+            echo "The certificate have no changes, no need for renewal"
+        else
+            echo "The list of domains for $DARRAYS certificate has been changed. Starting webroot renewal script..."
+            letsencrypt certonly --webroot --agree-tos --renew-by-default --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
+            run_renew_hook
+            echo "Renewal process finished for domain $DARRAYS"
+        fi
+
+
     else
     	echo "[INFO] certificate file not found for domain $DARRAYS. Starting webroot script..."
         letsencrypt certonly --webroot --agree-tos --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
