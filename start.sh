@@ -97,8 +97,10 @@ le_check() {
         le_hook
     fi
 
-    sleep ${check_freq}d
-    le_check
+    if [ "$1" != "once" ]; then
+        sleep ${check_freq}d
+        le_check
+    fi
 }
 
-le_check
+le_check $1
