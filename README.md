@@ -22,9 +22,9 @@ Letsencrypt cert auto getting and renewal script based on [letsencrypt](https://
      --name some-letsencrypt \
      -v /data/letsencrypt:/etc/letsencrypt \
      -v /data/letsencrypt-www:/tmp/letsencrypt \
-     -e DOMAINS=example.com www.example.com \
-     -e EMAIL=your@email.tld \
-     -e WEBROOT_PATH=/tmp/letsencrypt \
+     -e 'DOMAINS=example.com www.example.com' \
+     -e 'EMAIL=your@email.tld' \
+     -e 'WEBROOT_PATH=/tmp/letsencrypt' \
      kvaps/letsencrypt-webroot
 ```
 ## Renew hook
@@ -34,9 +34,10 @@ You can also assign hook for your container, it will be launched after letsencry
 * This feature requires a passthrough docker.sock into letsencrypt container: `-v /var/run/docker.sock:/var/run/docker.sock`
 * Also add `--link` to your container. Example: `--link some-nginx`
 * Then add `LE_RENEW_HOOK` environment variable to your container:
+
 Example hooks:
-  - nginx reload: `-e LE_RENEW_HOOK=docker kill -s HUP @CONTAINER_NAME@`
-  - container restart: `-e LE_RENEW_HOOK=docker restart @CONTAINER_NAME@`
+  - nginx reload: `-e 'LE_RENEW_HOOK=docker kill -s HUP @CONTAINER_NAME@'`
+  - container restart: `-e 'LE_RENEW_HOOK=docker restart @CONTAINER_NAME@'`
 
 For more detailed example, see the docker-compose configuration
 
@@ -63,7 +64,7 @@ nginx:
 
 letsencrypt:
   restart: always
-  image: kvaps/letsencrypt
+  image: kvaps/letsencrypt-webroot
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/docker.sock:/var/run/docker.sock
@@ -83,3 +84,11 @@ letsencrypt:
 
 You also can run it with once mode, just add `once` in your docker command.
 With this option a container will exited right after certificates update.
+
+## Environment variables
+
+* **DOMAINS**: Domains for your certificate. Example to `example.com www.example.com`.
+* **EMAIL**: Email for urgent notices and lost key recovery. Example to `your@email.tld`.
+* **WEBROOT_PATH** Path to the letsencrypt directory in the web server for checks. Example to `/tmp/letsencrypt`.
+* **EXP_LIMIT** The number of days before expiration of the certificate before request another one. Defaults to `30`.
+* **CHECK_FREQ**: The number of days how often to perform checks. Defaults to `30`.
