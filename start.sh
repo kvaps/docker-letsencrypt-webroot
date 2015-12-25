@@ -19,7 +19,7 @@ check_freq="${CHECK_FREQ:-30}"
 
 le_hook() {
     all_links=($(env | grep -oP '^[0-9A-Z_-]+(?=_ENV_LE_RENEW_HOOK)'))
-    compose_links=($(env | grep -oP '^[0-9A-Z]+_[0-9A-Z_-]+_[0-9]+(?=_ENV_LE_RENEW_HOOK)'))
+    compose_links=($(env | grep -oP '^[0-9A-Z]+_[a-zA-Z0-9_.-]+_[0-9]+(?=_ENV_LE_RENEW_HOOK)'))
     
     except_links=($(
         for link in ${compose_links[@]}; do
