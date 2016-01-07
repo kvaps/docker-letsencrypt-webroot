@@ -93,8 +93,9 @@ le_check() {
 
 
     else
-    	echo "[INFO] certificate file not found for domain $DARRAYS. Starting webroot script..."
-        le_hook
+      echo "[INFO] certificate file not found for domain $DARRAYS. Starting webroot initial certificate request script..."
+      le_renew
+      echo "Certificate request process finished for domain $DARRAYS"
     fi
 
     if [ "$1" != "once" ]; then
