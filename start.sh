@@ -1,12 +1,17 @@
 #!/bin/bash
 
 if [ -z "$DOMAINS" ] ; then
-  echo "No domains set, please fill -e DOMAINS='example.com www.example.com'"
+  echo "No domains set, please fill -e 'DOMAINS=example.com www.example.com'"
   exit 1
 fi
 
 if [ -z "$EMAIL" ] ; then
-  echo "No email set, please fill -e EMAIL='your@email.tld'"
+  echo "No email set, please fill -e 'EMAIL=your@email.tld'"
+  exit 1
+fi
+
+if [ -z "$WEBROOT_PATH" ] ; then
+  echo "No webroot path set, please fill -e 'WEBROOT_PATH=/tmp/letsencrypt'"
   exit 1
 fi
 
