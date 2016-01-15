@@ -11,12 +11,12 @@ Letsencrypt cert auto getting and renewal script based on [letsencrypt](https://
         root        /tmp/letsencrypt;
     }
 ```
-* Then run your image with letsencrypt-webroot connected volumes:
+* Then run your web server image with letsencrypt-webroot connected volumes:
 ```bash
    -v /data/letsencrypt:/etc/letsencrypt
    -v /data/letsencrypt-www:/tmp/letsencrypt
 ```
-* Run some-letsencrypt:
+* Run letsencrypt-webroot image:
 ```bash
    docker run \
      --name some-letsencrypt \
@@ -27,6 +27,18 @@ Letsencrypt cert auto getting and renewal script based on [letsencrypt](https://
      -e 'WEBROOT_PATH=/tmp/letsencrypt' \
      kvaps/letsencrypt-webroot
 ```
+
+* Configure your app to use certificates in the following path:
+
+  * **Private key**: `/etc/letsencrypt/live/example.com/privkey.pem`
+  * **Certificate**: `/etc/letsencrypt/live/example.com/cert.pem`
+  * **Intermediates**: `/etc/letsencrypt/live/example.com/chain.pem`
+  * **Certificate + intermediates**: `/etc/letsencrypt/live/example.com/fullchain.pem`
+
+**NOTE**: You should connect `/etc/letsencrypt` directory fully, because if you connect just `/etc/letsencrypt/live`, then symlinks to your certificates inside it will not work!
+
+
+
 ## Renew hook
 
 You can also assign hook for your container, it will be launched after letsencrypt receive a new certificate.
