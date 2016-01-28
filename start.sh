@@ -50,8 +50,16 @@ le_hook() {
     done
 }
 
+le_fixpermissions() {
+    echo "[INFO] Fixing permissions"
+        chown -R ${CHOWN:-root:root} /etc/letsencrypt
+        find /etc/letsencrypt -type d -exec chmod 755 {} \;
+        find /etc/letsencrypt -type f -exec chmod ${CHMOD:-644} {} \;
+}
+
 le_renew() {
     letsencrypt certonly --webroot --agree-tos --renew-by-default --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
+    le_fixpermissions
     le_hook
 }
 
