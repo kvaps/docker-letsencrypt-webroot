@@ -85,18 +85,13 @@ le_check() {
         echo "Checking domains for $DARRAYS..."
 
         domains=($(openssl x509  -in $cert_file -text -noout | grep -oP '(?<=DNS:)[^,]*'))
-        removed_domains=($(
-            for domain in ${domains[@]}; do
-                [[ " ${DARRAYS[@]} " =~ " ${domain} " ]] || echo $domain
-            done
-        ))
         new_domains=($(
             for domain in ${DARRAYS[@]}; do
                 [[ " ${domains[@]} " =~ " ${domain} " ]] || echo $domain
             done
         ))
 
-        if [ -z "$new_domains" ] && [ -z "$removed_domains" ] ; then
+        if [ -z "$new_domains" ] ; then
             echo "The certificate have no changes, no need for renewal"
         else
             echo "The list of domains for $DARRAYS certificate has been changed. Starting webroot renewal script..."
