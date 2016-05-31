@@ -58,7 +58,7 @@ le_fixpermissions() {
 }
 
 le_renew() {
-    letsencrypt certonly --webroot --agree-tos --renew-by-default --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
+    certbot certonly --webroot --agree-tos --renew-by-default --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
     le_fixpermissions
     le_hook
 }
