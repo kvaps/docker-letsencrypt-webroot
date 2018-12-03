@@ -15,6 +15,11 @@ if [ -z "$WEBROOT_PATH" ] ; then
   exit 1
 fi
 
+if [[ -z $STAGING ]]; then
+  echo "Using the staging environment"
+  ADDITIONAL="--staging"
+fi
+
 DARRAYS=(${DOMAINS})
 EMAIL_ADDRESS=${EMAIL}
 LE_DOMAINS=("${DARRAYS[*]/#/-d }")
@@ -58,7 +63,7 @@ le_fixpermissions() {
 }
 
 le_renew() {
-    certbot certonly --webroot --agree-tos --renew-by-default --text --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
+    certbot certonly --webroot --agree-tos --renew-by-default --text ${ADDITIONAL} --email ${EMAIL_ADDRESS} -w ${WEBROOT_PATH} ${LE_DOMAINS}
     le_fixpermissions
     le_hook
 }
@@ -102,6 +107,10 @@ le_check() {
 
     else
       echo "[INFO] certificate file not found for domain $DARRAYS. Starting webroot initial certificate request script..."
+      if [[ -z $CHICKENEGG ]]; then
+        echo "Making a temporary self signed certificate to prevent chicken and egg problems"
+        openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout "/etc/letsencrypt/live/$DARRAYS/privkey.pem" -out "${cert_file}" -subj "/CN=example.com" -days 1
+      fi
       le_renew
       echo "Certificate request process finished for domain $DARRAYS"
     fi
